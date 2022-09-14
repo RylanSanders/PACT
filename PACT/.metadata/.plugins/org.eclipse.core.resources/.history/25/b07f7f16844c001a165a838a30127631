@@ -1,0 +1,24 @@
+package tests;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import org.junit.jupiter.api.Test;
+
+class ImageEqualityTest {
+
+	@Test
+	void ImageEqualityTest() {
+		
+		GridTest gt = new GridTest();
+		BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage img2 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D gImg2 = (Graphics2D)img2.getGraphics();
+		gImg2.fillRect(0, 0, 50, 50);
+		assertTrue(gt.isEqualImages(img, img));
+		assertFalse(gt.isEqualImages(img, img2));
+	}
+
+}

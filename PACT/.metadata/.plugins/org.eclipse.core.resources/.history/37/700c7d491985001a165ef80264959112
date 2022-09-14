@@ -1,0 +1,55 @@
+package tools;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.Set;
+
+import gui.CommandToolBar;
+import gui.Grid;
+import gui.PreviewContentPanel;
+import gui.PreviewPanel;
+
+public class EyeDropperCommand implements Command {
+	private Tools tool = Tools.eyedropper;
+	private Set<Point> test;
+	private CommandToolBar cmdBar;
+
+	public EyeDropperCommand() {
+		cmdBar = new CommandToolBar();
+	}
+
+	@Override
+	public void doAction(Grid grid, HashMap<String, Integer> mouseInfo) {
+		int x = mouseInfo.get("Mouse X");
+		int y = mouseInfo.get("Mouse Y");
+		grid.updateView();
+
+		int colVal = grid.getView().getRGB(x, y);
+		Color testCol = new Color(colVal, true);
+		if (testCol.getAlpha() != 0) {
+			PreviewContentPanel colPnl = cmdBar.getPreviewPanel().getPanel("Color");
+			colPnl.setVal("Color", colVal);
+		}
+	}
+
+	@Override
+	public CommandToolBar getToolBar() {
+		// TODO Auto-generated method stub
+		return cmdBar;
+	}
+
+	@Override
+	public boolean isActive() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public Tools getToolID() {
+		// TODO Auto-generated method stub
+		return tool;
+	}
+
+}

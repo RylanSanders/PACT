@@ -1,0 +1,20 @@
+package tests;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.awt.image.BufferedImage;
+
+import org.junit.jupiter.api.Test;
+
+class ImageEqualityTest {
+
+	@Test
+	void ImageEqualityTest() {
+		
+		GridTest gt = new GridTest();
+		BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage img2 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		assertTrue(gt.isEqualImages(img, img2));
+	}
+
+}

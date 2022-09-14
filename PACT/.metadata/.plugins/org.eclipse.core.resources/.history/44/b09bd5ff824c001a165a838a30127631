@@ -1,0 +1,29 @@
+package tests;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import org.junit.jupiter.api.Test;
+
+import gui.Grid;
+
+class GridTest {
+
+	@Test
+	void updateViewTest() {
+		Grid toTest = new Grid();
+		BufferedImage img = new BufferedImage(BufferedImage.TYPE_INT_ARGB, 100, 100);
+		Graphics2D gImg = (Graphics2D)img.getGraphics();
+		gImg.fillOval(0, 0, 100, 100);
+		toTest.setLayer(0, img);
+		
+		img = new BufferedImage(BufferedImage.TYPE_INT_ARGB, 100, 100);
+		gImg = (Graphics2D)img.getGraphics();
+		gImg.fillRect(0, 0, 50, 50);
+		toTest.addLayer(gImg);
+		fail("Not yet implemented");
+	}
+
+}

@@ -1,0 +1,109 @@
+package gui;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+
+import tests.BasicControlListener;
+import tests.BasicToolCommand;
+import tools.Command;
+import tools.ControlListener;
+import tools.DragListener;
+import tools.EraserCommand;
+import tools.FillCommand;
+import tools.LineCommand;
+import tools.PencilCommand;
+import tools.Tools;
+import tools.Utilities;
+
+public abstract class GridView extends JPanel {
+	private Grid grid;
+	private List<ControlListener> activeListeners;
+	private List<ControlListener> passiveListeners;
+	private Tools activeTool = Tools.pencil;
+	private GridMediator mediator;
+	private Color activeColor = Color.BLUE;
+	private int width, height;
+	private PreviewPanel previewPnl;
+	private CommandToolBar toolBar;
+	private final int TOOL_BAR_HEIGHT = 30;
+	public GridView(int width, int height,int pixelWidth, int pixelHeight, PreviewPanel previewPnl) {
+		activeListeners = new ArrayList<>();
+		passiveListeners = new ArrayList<>();
+		setLayout(null);
+		setPreferredSize(new Dimension(width, height));
+		grid = new Grid(pixelWidth, pixelHeight);
+		mediator = new GridMediator(this);
+		this.width = width;
+		this.height = height;
+		this.previewPnl = previewPnl;
+		
+		initListeners();
+		activeListeners.get(Tools.toolIDInt(activeTool)).addListenerTo(this);
+		toolBar = activeListeners.get(Tools.toolIDInt(activeTool)).getCommand().getToolBar();
+		toolBar.setPreviewPanel(previewPnl);
+		add(toolBar);
+		toolBar.setBounds(0, 0, width, TOOL_BAR_HEIGHT);
+		previewPnl.setPanel("Color", activeListeners.get(Tools.toolIDInt(activeTool)).getCommand());
+	}
+
+	public Grid getGrid() {
+		return grid;
+	}
+
+	public void setActiveTool(Tools toolNum) {
+		//TODO add lines that swap the preview panel and the tool bar
+		ControlListener newListener = activeListeners.get(Tools.toolIDInt(toolNum));
+		ControlListener oldListener = activeListeners.get(Tools.toolIDInt(activeTool));
+		oldListener.removeListenerFrom(this);
+		newListener.addListenerTo(this);
+		activeTool = toolNum;
+		//In Testing
+		//remove(toolBar);
+		remove(toolBar);
+		toolBar = activeListeners.get(Tools.toolIDInt(toolNum)).getCommand().getToolBar();
+		toolBar.setPreviewPanel(previewPnl);
+		//TODO change the color in next line to a new method in command called getDefaultPreview()
+		previewPnl.setPanel("Color", newListener.getCommand());
+		add(toolBar);
+		toolBar.setBounds(0, 0, width, TOOL_BAR_HEIGHT);
+		toolBar.repaint();
+		previewPnl.repaint();
+	}
+
+	public Color getActiveColor() {
+		return activeColor;
+	}
+
+	private void setUpListener(Command cmd, ControlListener listener) {
+		listener.setCommand(cmd);
+		
+		List<ControlListener> addTo = (cmd.isActive()) ? activeListeners : passiveListeners;
+		addTo.add(listener);
+	}
+
+	private void initListeners() {
+		// TODO implement to add all of the controls and listeners
+		setUpListener(new PencilCommand(), new DragListener(mediator));
+		setUpListener(new EraserCommand(), new DragListener(mediator));
+		setUpListener(new FillCommand(), new DragListener(mediator));
+		setUpListener(new LineCommand(), new DragListener(mediator));
+	}
+	
+	//public int getToolBarHeight() {
+		//return TOOL_BAR_HEIGHT;
+	//}
+	
+	public abstract Dimension getDimensions();
+	public abstract Point getOffset();
+}

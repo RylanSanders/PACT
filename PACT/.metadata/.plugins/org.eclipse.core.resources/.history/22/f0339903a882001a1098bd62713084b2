@@ -1,0 +1,80 @@
+package gui;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Grid {
+	public static final int BASE_LAYER = 0;
+	private BufferedImage view;
+	private Map<Integer, BufferedImage> layers;
+	private int width, height, size;
+	private boolean isWorking = false;
+
+	public Grid(int width, int height) {
+		view = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		layers = new HashMap<>();
+		this.width = width;
+		this.height = height;
+		size = 0;
+		layers.put(0, view);
+		clearGrid();
+	}
+
+	private void clearGrid() {
+		BufferedImage img = layers.get(BASE_LAYER);
+		Graphics2D gImg = img.createGraphics();
+		gImg.setColor(new Color(0, 0, 0, 0));
+		gImg.fillRect(0, 0, img.getWidth(), img.getHeight());
+	}
+
+	public void setLayer(int layerID, BufferedImage img) {
+		isWorking = true;
+		layers.put(layerID, img);
+		isWorking = false;
+	}
+
+	public void addLayer(BufferedImage img) {
+		isWorking = true;
+		layers.put(size, img);
+		size++;
+		isWorking = false;
+	}
+
+	public void updateView() {
+		if (!isWorking) {
+			isWorking = true;
+			BufferedImage temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D gTemp = temp.createGraphics();
+			layers.forEach((x, y) -> gTemp.drawImage(y, 0, 0, null));
+			view = temp;
+			isWorking = false;
+		}
+	}
+
+	public BufferedImage getView() {
+		return view;
+	}
+
+	public void mergeLayers(int layer1, int layer2) {
+		isWorking = true;
+		BufferedImage base = layers.get(layer1);
+		Graphics2D gBase = base.createGraphics();
+		BufferedImage addLayer = layers.get(layer2);
+		gBase.drawImage(addLayer, 0, 0, null);
+		layers.remove(layer2);
+		size--;
+		isWorking = false;
+	}
+
+	public BufferedImage getLayer(int layerID) {
+		return layers.get(layerID);
+	}
+
+	public Dimension getPreferredSize() {
+		return new Dimension(width, height);
+	}
+}

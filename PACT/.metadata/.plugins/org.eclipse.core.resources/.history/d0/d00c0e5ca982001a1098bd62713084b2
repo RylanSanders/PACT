@@ -1,0 +1,81 @@
+package gui;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+
+public class FileManager {
+	private File currentFile;
+	private GridView gridView;
+	private String mode;
+	private FileSelector lastFileSelector;
+	public FileManager(GridView gridView) {
+		this.gridView = gridView;
+	}
+
+	public void runFileSelection(String operation) {
+		mode = operation;
+		if(mode.equals("Save")&&currentFile!=null)
+			saveFile(currentFile);
+		else
+			lastFileSelector = new FileSelector(this);
+	}
+	
+	public void returnFile(File file) {
+		switch(mode) {
+		case "Save":
+			saveFile(file);
+		break;
+		case "Open":
+			openFile(file);
+		break;
+		case "Save As":
+			selectSaveFile(file);
+		break;
+		}
+	}
+
+	public void saveFile(File file) {
+		System.out.println(currentFile);
+		if(currentFile!=null) {
+			try {
+				ImageIO.write(gridView.getGrid().getView(), "png", file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			selectSaveFile(file);
+		}
+	}
+	
+	private void openFile(File file) {
+		try {
+			BufferedImage img = ImageIO.read(file);
+			gridView.remakeGrid(img.getWidth(), img.getHeight());
+			gridView.getGrid().setLayer(Grid.BASE_LAYER,img);
+			gridView.repaint();
+		} catch (Exception e) {
+			JOptionPane.showConfirmDialog(lastFileSelector, "Invalid File Location", "Input Error Dialog",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.CANCEL_OPTION);
+		}
+	}
+	
+	private void selectSaveFile(File file) {
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+			}
+		}
+
+		try {
+			ImageIO.write(gridView.getGrid().getView(), "png", file);
+			currentFile = file;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

@@ -1,0 +1,33 @@
+package gui;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JToolBar;
+
+import tools.ToolOption;
+
+public class CommandToolBar extends JToolBar{
+	private static final long serialVersionUID = -5989478014705033911L;
+
+	private PreviewPanel prevPnl;
+	private int currentX = 20, buffer = 10;
+	public CommandToolBar() {
+		setLayout(null);
+	}
+	
+	public void setPreviewPanel(PreviewPanel prevPnl) {
+		this.prevPnl = prevPnl;
+	}
+	
+	public PreviewPanel getPreviewPanel() {
+		return prevPnl;
+	}
+	
+	public void addOption(ToolOption op) {
+		add(op);
+		op.setBounds(currentX, 0, op.getPreferredSize().width, 30);
+		currentX += op.getPreferredSize().width+buffer;
+		repaint();
+	}
+	
+}

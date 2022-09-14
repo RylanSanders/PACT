@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;tools.EyeDropper&apos; to &apos;EyeDropperCommand&apos;&#x0D;&#x0A;- Original project: &apos;PACT&apos;&#x0D;&#x0A;- Original element: &apos;tools.EyeDropper&apos;&#x0D;&#x0A;- Renamed element: &apos;tools.EyeDropperCommand&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;EyeDropper&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;tools{EyeDropper.java[EyeDropper" matchStrategy="1" name="EyeDropperCommand" qualified="false" references="true" similarDeclarations="false" stamp="1586657384613" textual="false" version="1.0"/>
+</session>

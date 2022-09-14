@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;gui.GridMediator.getGridViewPreferredDim()&apos; to &apos;getGridViewPreferredSize&apos;&#x0D;&#x0A;- Original project: &apos;PACT&apos;&#x0D;&#x0A;- Original element: &apos;gui.GridMediator.getGridViewPreferredDim()&apos;&#x0D;&#x0A;- Renamed element: &apos;gui.GridMediator.getGridViewPreferredSize()&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;getGridViewPreferredDim&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;gui{GridMediator.java[GridMediator~getGridViewPreferredDim" name="getGridViewPreferredSize" references="true" stamp="1583722351163" version="1.0"/>
+</session>

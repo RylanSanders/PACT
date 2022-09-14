@@ -1,0 +1,28 @@
+package tools;
+
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+
+import gui.FactoryManager;
+
+public class ButtonOption extends ToolOption{
+	private static final long serialVersionUID = 8213328797063285041L;
+	
+	private JButton btn;
+	public ButtonOption(String btnText) {
+		setLayout(null);
+		btn = FactoryManager.getInstance().getFactory().getButton(btnText);
+		this.setPreferredSize(new Dimension(80, 30));
+		add(btn);
+		btn.setBounds(0, 0, 80, 30);
+	}
+	
+	@Override
+	public void setBehavior(ActionListener f) {
+		btn.addActionListener(f);
+		
+	}
+
+}

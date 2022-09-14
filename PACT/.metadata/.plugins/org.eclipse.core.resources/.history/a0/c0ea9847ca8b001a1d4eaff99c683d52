@@ -1,0 +1,68 @@
+package tests;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import javax.swing.SwingUtilities;
+
+import org.junit.jupiter.api.Test;
+
+import gui.Grid;
+
+class GridTest {
+
+	public static void main(String[] args) {
+		testGetView();
+		//testMergeLayer();
+	}
+
+	// Tests the add layer/ update view abilities of Grid
+	// Should start a frame with a blue circle in the entire frame and a red square
+	// in the upper left
+	private static void testGetView() {
+		Grid toTest = new Grid(100, 100);
+		//Creates a test image with a rectangle on it to set the base layer in Grid
+		BufferedImage img = new BufferedImage( 100, 100, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D gImg = (Graphics2D)img.getGraphics();
+		gImg.setColor(Color.BLUE);
+		gImg.fillOval(0, 0, 100, 100);
+		toTest.addLayer(img);
+		
+		//Creates a secondary layer to place on top of the Grid
+		img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		gImg = (Graphics2D)img.getGraphics();
+		gImg.setColor(Color.RED);
+		gImg.fillRect(0, 0, 50, 50);
+		toTest.addLayer(img);
+		
+		toTest.updateView();
+		SwingUtilities.invokeLater(()->new ImageFrame(toTest.getView()));
+	}
+
+	// Tests Merge Layer in Grid
+	// Should start a frame with a blue circle in the entire frame and a red square
+	// in the upper left
+	private static void testMergeLayer() {
+		Grid toTest = new Grid(100, 100);
+		//Creates a test image with a rectangle on it to set the base layer in Grid
+		BufferedImage img = new BufferedImage( 100, 100, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D gImg = (Graphics2D)img.getGraphics();
+		gImg.setColor(Color.BLUE);
+		gImg.fillOval(0, 0, 100, 100);
+		toTest.addLayer(img);
+		
+		//Creates a secondary layer to place on top of the Grid
+		img = new BufferedImage( 100, 100, BufferedImage.TYPE_INT_ARGB);
+		gImg = (Graphics2D)img.getGraphics();
+		gImg.setColor(Color.RED);
+		gImg.fillRect(0, 0, 50, 50);
+		toTest.addLayer(img);
+		
+		toTest.mergeLayers(Grid.BASE_LAYER, 1);
+		SwingUtilities.invokeLater(()->new ImageFrame(toTest.getLayer(Grid.BASE_LAYER)));
+	}
+
+}

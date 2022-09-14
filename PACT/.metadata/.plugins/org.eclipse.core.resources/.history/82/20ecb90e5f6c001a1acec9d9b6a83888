@@ -1,0 +1,80 @@
+package gui;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import tools.LineCommand;
+
+public class LineToolBar extends CommandToolBar {
+	private LineCommand cmd;
+	private boolean isPnlInit = false;
+	private ColorSelectPanel pnl;
+	public LineToolBar(LineCommand cmd) {
+		setLayout(null);
+		
+		JButton colorBtn = new JButton("Color");
+		JTextField sizeField = new JTextField();
+		//Testing
+		JButton refreshBtn = new JButton("Refresh");		
+		pnl = new ColorSelectPanel(cmd);
+		
+		add(colorBtn);
+		add(sizeField);
+		add(refreshBtn);
+		
+		colorBtn.setBounds(20, 0, 50, 30);
+		sizeField.setBounds(90, 0, 40, 30);
+		refreshBtn.setBounds(110, 0, 70, 30);
+		
+		sizeField.setText("1");
+		//sizeField.addPropertyChangeListener(x->cmd.setThickness(Integer.parseInt(sizeField.getText())));
+		//TODO change so that clicking on and off on a textbox will set the size
+		sizeField.addActionListener(x->cmd.setThickness(Integer.parseInt(sizeField.getText())));
+		colorBtn.addActionListener(this::handleColBtn);
+		refreshBtn.addActionListener(x->getPreviewPanel().repaint());
+		this.cmd = cmd;
+		setBackground(Color.BLUE);
+	}
+	
+	private void handleColBtn(ActionEvent e) {
+		if(!isPnlInit) {
+			getPreviewPanel().addPanel(pnl, "Color");
+			isPnlInit = true;
+		}
+		getPreviewPanel().setPanel("Color");
+		repaint();
+		pnl.repaint();
+		getPreviewPanel().repaint();
+	}
+}
+
+class ColorSelectPanel extends JPanel{
+	private LineCommand cmd;
+	public ColorSelectPanel(LineCommand cmd) {
+		setLayout(new GridLayout(3,3));
+		this.cmd = cmd;
+		for(int i = 0; i < 9; i++)
+			addButton(randomColor());
+	}
+	
+	private Color randomColor() {
+		Random rand = new Random();
+		return new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+	}
+	
+	private void addButton(Color col) {
+		JButton btn = new JButton();
+		btn.setBackground(col);
+		btn.setPreferredSize(new Dimension(50, 50));
+		btn.addActionListener(x->cmd.setColor(col));
+		add(btn);
+	}
+}

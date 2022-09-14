@@ -1,0 +1,17 @@
+package tests;
+
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+import gui.LineToolBar;
+
+public class LineToolBarTest {
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		frame.setSize(new Dimension(500, 500));
+		frame.add(new LineToolBar(null));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+}

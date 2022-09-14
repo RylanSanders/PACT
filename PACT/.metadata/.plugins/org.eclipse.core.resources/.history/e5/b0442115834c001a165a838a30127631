@@ -1,0 +1,38 @@
+package tests;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import org.junit.jupiter.api.Test;
+
+import gui.Grid;
+
+class GridTest {
+
+	@Test
+	void updateViewTest() {
+		Grid toTest = new Grid();
+		//Creates a test image with a rectangle on it to set the base layer in Grid
+		BufferedImage img = new BufferedImage(BufferedImage.TYPE_INT_ARGB, 100, 100);
+		Graphics2D gImg = (Graphics2D)img.getGraphics();
+		gImg.fillOval(0, 0, 100, 100);
+		toTest.setLayer(0, img);
+		
+		//Creates a secondary layer to place on top of the Grid
+		img = new BufferedImage(BufferedImage.TYPE_INT_ARGB, 100, 100);
+		gImg = (Graphics2D)img.getGraphics();
+		gImg.fillRect(0, 0, 50, 50);
+		toTest.addLayer(gImg);
+		
+		toTest.updateView()
+		fail("Not yet implemented");
+	}
+	
+	public boolean isEqualImages(BufferedImage img1, BufferedImage img2) {
+		
+		return false
+	}
+
+}

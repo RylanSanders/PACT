@@ -1,0 +1,136 @@
+package tools;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+
+import gui.CommandToolBar;
+import gui.Grid;
+import gui.GridMediator;
+import gui.GridView;
+
+public class BasicSelectCommand implements Command {
+	private final Tools tool = Tools.select;
+	private CommandToolBar cmdBar;
+	private Rectangle selectedArea, tempSelectedArea;
+	private boolean isSelecting = true;
+	private Grid grid;
+	private BufferedImage clipBoard;
+
+	public BasicSelectCommand() {
+		cmdBar = new CommandToolBar();
+	}
+
+	@Override
+	public void doAction(Grid grid, HashMap<String, Integer> mouseInfo) {
+		this.grid = grid;
+		int width = grid.getView().getWidth();
+		int height = grid.getView().getHeight();
+
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D gImg = img.createGraphics();
+		gImg.setColor(Color.BLACK);
+
+		//Handles all of the mouse input to get the correct selection area
+		int x = mouseInfo.get("Mouse X");
+		int y = mouseInfo.get("Mouse Y");
+		int x2 = mouseInfo.get("Starting Mouse X");
+		int y2 = mouseInfo.get("Starting Mouse Y");
+		if (isSelecting) {
+			int startX = (x2 < x) ? x2 : x;
+			int startY = (y2 < y) ? y2 : y;
+			tempSelectedArea = new Rectangle(startX, startY, Math.abs(x - x2), Math.abs(y - y2));
+			gImg.draw(tempSelectedArea);
+			gImg.dispose();
+			grid.setLayer(Tools.toolIDInt(tool) + 1, img);
+		}
+
+	}
+
+	@Override
+	public CommandToolBar getToolBar() {
+		return cmdBar;
+	}
+
+	@Override
+	public boolean isActive() {
+		return true;
+	}
+
+	@Override
+	public Tools getToolID() {
+		return Tools.select;
+	}
+
+	public boolean isSelecting() {
+		return isSelecting;
+	}
+
+	public void setSelecting(boolean selecting) {
+		isSelecting = selecting;
+	}
+
+	public void endSelection() {
+		isSelecting = false;
+		selectedArea = tempSelectedArea;
+	}
+
+	public void clearSelection() {
+		isSelecting = true;
+		grid.setLayer(Tools.toolIDInt(tool) + 1, Utilities.getBlankImage(grid.getPreferredSize()));
+	}
+
+	private void copyFunction(GridMediator gridMed) {
+		Grid grid = gridMed.getGrid();
+
+		int tX = selectedArea.x + 1;
+		int tY = selectedArea.y + 1;
+		int tW = selectedArea.width - 1;
+		int tH = selectedArea.height - 1;
+
+		BufferedImage toCopy = Utilities.getBlankImage(tW, tH);
+		Graphics2D gCopy = toCopy.createGraphics();
+		grid.updateView();
+		gCopy.drawImage(grid.getView(), 0, 0, tW, tH, tX, tY, tX + tW, tY + tH, null);
+		clipBoard = toCopy;
+		clearSelection();
+	}
+
+	private void pasteFunction(GridMediator gridMed) {
+		Point mouse = MouseInfo.getPointerInfo().getLocation();
+		GridView gridView = gridMed.getGridView();
+		int xTrans = gridView.getLocationOnScreen().x;
+		int yTrans = gridView.getLocationOnScreen().y;
+		int screenRatio = gridView.getSize().width / grid.getPreferredSize().width;
+		mouse.translate(-xTrans, -yTrans);
+		
+		if (gridMed.getGridView().contains(mouse)) {
+			if (clipBoard != null) {
+				BufferedImage img = Utilities.getBlankImage(grid.getPreferredSize());
+				Graphics2D gImg = img.createGraphics();
+				Map<String, Integer> coords = Utilities.convertCoords(mouse, gridView.getDimensions(),
+						grid.getPreferredSize(), "X", "Y",
+						new Point(-(clipBoard.getWidth() + clipBoard.getWidth() / 2) * screenRatio,
+								-(clipBoard.getHeight() - clipBoard.getHeight() / 2) * screenRatio));
+				gImg.drawImage(clipBoard, coords.get("X"), coords.get("Y"), null);
+				gridMed.getGrid().setLayer(Tools.toolIDInt(tool) + 1, img);
+				gridMed.endCurrentCommand(true);
+				gridMed.refreshGridView();
+			}
+		}
+
+	}
+
+	public KeyControlListener getPasteListener() {
+		return new KeyControlListener("V", this::pasteFunction);
+	}
+	
+	public KeyControlListener getCopyListener() {
+		return new KeyControlListener("C", this::copyFunction);
+	}
+}

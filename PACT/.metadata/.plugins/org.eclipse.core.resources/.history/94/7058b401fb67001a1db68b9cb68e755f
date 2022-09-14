@@ -1,0 +1,99 @@
+package gui;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Paint;
+import java.awt.Rectangle;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+
+public class AppFrame extends JFrame {
+	private JPanel gridView, toolPnl, previewPnl;
+	private GridView grid;
+	private JMenuBar frameBarPnl;
+	private RelatableRectHolder gridRect, toolRect, prevRect, frameBarRect;
+	private RInt width, height;
+	public AppFrame() {
+		super("PACT");
+		setSize(1500, 900);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(null);
+	
+		
+		gridView = new JPanel();
+		gridView.setBackground(Color.GREEN);
+		toolPnl = new ToolPanel(grid);
+		previewPnl = new JPanel();
+		previewPnl.setBackground(Color.YELLOW);
+		//TODO implement new methods in the GUIFactory for these things
+		frameBarPnl = new JMenuBar();
+		JMenu menu = new JMenu("File");
+		menu.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		frameBarPnl.add(menu);
+		
+		add(gridView);
+		add(toolPnl);
+		add(previewPnl);
+		add(frameBarPnl);
+		
+		setRectBounds();
+		
+		gridView.setBounds(gridRect.getRectangle());
+		toolPnl.setBounds(toolRect.getRectangle());
+		previewPnl.setBounds(prevRect.getRectangle());
+		frameBarPnl.setBounds(frameBarRect.getRectangle());
+		setVisible(true);
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		width.setValue(this.getWidth());
+		height.setValue(this.getHeight());
+		
+		gridView.setBounds(gridRect.getRectangle());
+		toolPnl.setBounds(toolRect.getRectangle());
+		previewPnl.setBounds(prevRect.getRectangle());
+		frameBarPnl.setBounds(frameBarRect.getRectangle());
+	}
+	
+	private void setRectBounds() {
+		width = RInt.makeRInt(this.getWidth());
+		height = RInt.makeRInt(this.getHeight());
+		
+		//frameBar Rect
+		RInt frameBarX = RInt.makeRInt(0);
+		RInt frameBarY = RInt.makeRInt(0);
+		RInt frameBarWidth = RInt.makeRInt(width, RInt.makeRInt(0), Operations.constant());
+		RInt frameBarHeight = RInt.makeRInt(30);
+		frameBarRect = new RelatableRectHolder(frameBarX, frameBarY, frameBarWidth, frameBarHeight);
+		
+		//ToolSelection Rect
+		RInt toolX = RInt.makeRInt(0);
+		RInt toolY = RInt.makeRInt(frameBarHeight, RInt.makeRInt(0), Operations.constant());
+		RInt toolWidth = RInt.makeRInt(75);
+		RInt toolHeight = RInt.makeRInt(height, frameBarHeight, Operations.subtract());
+		toolRect = new RelatableRectHolder(toolX, toolY, toolWidth, toolHeight);
+		
+		//Preview Rect
+		RInt prevWidth = RInt.makeRInt(75);
+		RInt prevX = RInt.makeRInt(width, prevWidth, Operations.subtract());
+		RInt prevY = RInt.makeRInt(frameBarHeight, RInt.makeRInt(0), Operations.constant());
+		RInt prevHeight = RInt.makeRInt(height, frameBarHeight, Operations.subtract());
+		prevRect = new RelatableRectHolder(prevX, prevY, prevWidth, prevHeight);
+		
+		//GridView Rect
+		RInt gridX = RInt.makeRInt(toolX, toolWidth, Operations.sum());
+		RInt gridY =  RInt.makeRInt(frameBarHeight, RInt.makeRInt(0), Operations.constant());
+		RInt gridWidth = RInt.makeRInt(width, RInt.makeRInt(toolWidth, prevWidth, Operations.sum()), Operations.subtract());
+		RInt gridHeight = RInt.makeRInt(height, frameBarHeight, Operations.subtract());
+		gridRect = new RelatableRectHolder(gridX, gridY, gridWidth, gridHeight);
+		
+	}
+}

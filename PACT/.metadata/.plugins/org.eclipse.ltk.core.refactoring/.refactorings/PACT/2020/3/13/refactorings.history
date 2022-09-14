@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Change method &apos;public JToolBar tools.Command.getToolBar()&apos; to &apos;public CommandToolBar getToolBar()&apos;&#x0D;&#x0A;- Original project: &apos;PACT&apos;&#x0D;&#x0A;- Original element: &apos;tools.Command.getToolBar()&apos;&#x0D;&#x0A;- New return type: &apos;CommandToolBar&apos;" delegate="false" deprecate="true" description="Change method &apos;getToolBar&apos;" flags="589830" id="org.eclipse.jdt.ui.change.method.signature" input="/src&lt;tools{Command.java[Command~getToolBar" name="getToolBar" return="CommandToolBar" stamp="1584840939882" version="1.0"/>
+</session>

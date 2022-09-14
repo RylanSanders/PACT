@@ -1,0 +1,72 @@
+package tools;
+
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
+
+import javax.swing.event.MouseInputAdapter;
+
+import gui.GridMediator;
+
+public class DragListener extends MouseInputAdapter implements ControlListener{
+
+	private Command cmd;
+	private GridMediator gridMed;
+	private HashMap<String, Integer> mouseInfo;
+	public DragListener(Command cmd, GridMediator gridMed) {
+		this.cmd = cmd;
+		this.gridMed = gridMed;
+		mouseInfo = new HashMap<>();
+	}
+	
+	public DragListener(GridMediator gridMed) {
+		this.gridMed = gridMed;
+		mouseInfo = new HashMap<>();
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		mouseInfo.put("Starting Mouse X", e.getX());
+		mouseInfo.put("Starting Mouse Y", e.getY());
+		mouseInfo.put("Mouse X", e.getX());
+		mouseInfo.put("Mouse Y", e.getY());
+		gridMed.executeCommand(cmd, mouseInfo);
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		gridMed.endCurrentCommand();
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		mouseInfo.put("Mouse X", e.getX());
+		mouseInfo.put("Mouse Y", e.getY());
+		gridMed.setMouseInfo(mouseInfo);
+	}
+	
+	
+	@Override
+	public Listeners getListenerType() {
+		return Listeners.drag;
+	}
+
+	@Override
+	public void addListenerTo(Component comp) {
+		Utilities.getTopContainer(comp).addMouseListener(this);
+		Utilities.getTopContainer(comp).addMouseMotionListener(this);
+	}
+
+	@Override
+	public void removeListenerFrom(Component comp) {
+		Utilities.getTopContainer(comp).removeMouseListener(this);
+		
+	}
+
+	@Override
+	public void setCommand(Command cmd) {
+		this.cmd = cmd;
+	}
+
+}

@@ -1,0 +1,36 @@
+package gui;
+
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.util.List;
+import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import tools.LineCommand;
+import tools.Utilities;
+
+public class PreviewPanel extends JPanel {
+	private CardLayout layout;
+	private JPanel col;
+	public PreviewPanel() {
+		layout = new CardLayout();
+		setLayout(layout);
+	}
+	
+	public void setPanel(String pnlName) {
+		layout.show(this, pnlName);
+	}
+	
+	public void addPanel(JPanel nextPnl, String pnlName) {
+		add(nextPnl, pnlName);
+	}
+	
+	
+}
+

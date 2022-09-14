@@ -1,0 +1,35 @@
+package tools;
+
+import java.awt.event.MouseEvent;
+
+import gui.GridMediator;
+
+public class SelectDragListener extends DragListener {
+
+	private GridMediator gridMed;
+	public SelectDragListener(SelectCommand cmd, GridMediator gridMed) {
+		super(cmd, gridMed);
+		this.gridMed = gridMed;
+	}
+	
+	public SelectDragListener(GridMediator gridMed) {
+		super(gridMed);
+		this.gridMed = gridMed;
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		SelectCommand sCmd = (SelectCommand)getCommand();
+		if(sCmd.isSelecting()) {
+			sCmd.endSelection();
+			gridMed.endCurrentCommand(false);
+		}
+			
+		else {
+			System.out.println("Clear");
+			sCmd.clearSelection();
+			super.mouseReleased(e);
+		}
+	}
+
+}

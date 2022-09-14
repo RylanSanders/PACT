@@ -1,0 +1,54 @@
+package tools;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JComponent;
+
+import gui.Grid;
+import gui.GridView;
+
+public class Utilities {
+	public static Container getTopContainer(Component comp) {
+		Component cursor = comp;
+		while(cursor.getParent()!=null)
+			cursor = cursor.getParent();
+		return (Container)cursor;
+	}
+	
+	public static Map<String, Integer> convertCoords(Point p, Dimension size1, Dimension size2, String key1, String key2, Point offset){
+		int x = reboundCoords(p.x+offset.x, size1.width, size2.width);
+		int y = reboundCoords(p.y+offset.y, size1.height, size2.height);
+		Map<String, Integer> toRet = new HashMap<>();
+		toRet.put(key1, x);
+		toRet.put(key2, y);
+		return toRet;
+	}
+	
+	//Wrapper of convertCoords for more convenient use in ControlListeners
+	public static void addConvertedCoords(Point p, Dimension gridViewDim, Grid grid, String key1, String key2, Map<String, Integer> map, Point offset) {
+		Dimension gridDim = grid.getPreferredSize();
+		Map<String, Integer> posMap = Utilities.convertCoords(p, gridViewDim, gridDim, key1, key2, offset);
+		map.putAll(posMap);
+	}
+	
+	private static int reboundCoords(int coord, int dim1, int dim2) {
+		double ratio = (double)coord/(double)dim1;
+		return (int)(ratio*dim2);
+	}
+	
+	public static BufferedImage getBlankImage(Dimension d) {
+		return new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
+	}
+	
+	public static BufferedImage getBlankImage(int width, int height) {
+		return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+	}
+}

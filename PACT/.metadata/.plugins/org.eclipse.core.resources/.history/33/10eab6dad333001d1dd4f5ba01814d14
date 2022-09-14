@@ -1,0 +1,24 @@
+package tests;
+
+import javax.swing.JFrame; 
+
+import gui.BasicGridView;
+import gui.GridView;
+
+public class LineToolTest {
+	public static void main(String[] args) {
+		GridView grid = new BasicGridView(500, 500);
+		JFrame frame = new JFrame("GridView Test Frame");
+		frame.add(grid);
+		
+
+		//listener.addListenerTo(grid);
+		/*Timer timer = new Timer(100, x->grid.repaint());
+		Timer timer2 = new Timer(100, x->frame.repaint());
+		timer.start();
+		timer2.start();*/
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+}

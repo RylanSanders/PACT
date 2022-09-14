@@ -1,0 +1,40 @@
+package gui;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import tools.Tools;
+
+public class ToolPanel extends JPanel{
+	private int width = 2, height = 3;
+	private int numBtns = 4;
+	private GridView grid;
+	public ToolPanel(GridView grid) {
+		setLayout(new GridLayout(height, width));
+		this.grid = grid;
+		
+		//Add the buttons
+		//TODO in the future make this auto populate from a list stored in tools
+		addButton(Tools.pencil);
+		addButton(Tools.eraser);
+		addButton(Tools.fill);
+	}
+	
+	public void addButton(Tools tool) {
+		JButton btn = new JButton(Tools.toolToString(tool));
+		btn.setPreferredSize(new Dimension(50, 50));
+		btn.setBackground(randomColor());
+		btn.addActionListener(x->grid.setActiveTool(tool));
+		add(btn);
+	}
+	
+	private Color randomColor() {
+		Random rand = new Random();
+		return new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
+	}
+}
